@@ -1,0 +1,78 @@
+<a href="/streamers">
+  <- Back to Streamers
+</a>
+<div id="twitch-embed"></div>
+<div id="events"></div>
+<script src="https://embed.twitch.tv/embed/v1.js"></script>
+<script type="text/javascript">
+  axios({
+    method: "get", url: encodeURI(`https://api.twitch.tv/kraken/channels/<%= @conn.assigns.user_name %>`),
+    headers: {'Client-ID' : '9j97eww9y3ewbqtw2dnoax3j5ejdbl'}
+  }).then(res => {
+    new Twitch.Embed("twitch-embed", {
+      width: 854,
+      height: 480,
+      channel: res.data.name
+    });
+  });
+  // get events for the current streamer
+  axios({
+    method: "get",
+    url: `https://api.twitch.tv/v5/channels/${<%= @conn.assigns.stream_id %>}/events`,
+    headers: { 'Client-ID' : '9j97eww9y3ewbqtw2dnoax3j5ejdbl' },
+  }).then(res => {
+    let events = res.data.events;
+    let eventsDiv = document.getElementById("events");
+    let heading = document.createElement('h1');
+    if (events.length > 0) {
+      heading.innerHTML = "Streamer Events";
+      eventsDiv.appendChild(heading);
+    } else {
+      heading.innerHTML = "No Recent Streamer Events Found";
+      eventsDiv.appendChild(heading);
+    }
+    renderEvents(events,eventsDiv);
+  });
+  // Subscribing to the user follow event but this subscription is not working at present
+  axios({
+    method: "post",
+    url: "https://api.twitch.tv/helix/webhooks/hub",
+    headers: {
+      'Client-ID' : '9j97eww9y3ewbqtw2dnoax3j5ejdbl',
+      'Content-Type': 'application/json'
+    },
+    data: {
+      "hub.callback": "http://localhost:4000/user-follows-event",
+      "hub.topic": "https://api.twitch.tv/helix/users/follows?to_id=<%= @conn.assigns.user_id %>",
+      "hub.mode": "subscribe"
+    }
+  }).then(res => {
+    console.log(res);
+  })
+
+  function renderEvents(events,eventsDiv){
+    events.map(event => {
+      let container = document.createElement('div');
+      container.classList.add("event-container")
+      container.setAttribute("id", event._id)
+      let titleAnchor = document.createElement('a');
+      titleAnchor.href = `https://www.twitch.tv/events/${event._id}`;
+      titleAnchor.target = "_blank"
+      titleAnchor.innerHTML = event.title;
+      titleAnchor.classList.add("event-title")
+      let date = document.createElement('div');
+      let startDate = new Date(event.start_time);
+      let endDate = new Date(event.end_time);
+      let startDateString = startDate.toDateString() + " " + startDate.toTimeString().slice(0,5);
+      let endDateString = endDate.toDateString() + " " + endDate.toTimeString().slice(0,5);
+      date.innerHTML = "DATE & TIME : " + startDateString + " - " + endDateString;
+      let coverImg = document.createElement('img');
+      coverImg.src = event.cover_image_url.replace("{width}","100").replace("{height}","50")
+      container.appendChild(coverImg);
+      container.appendChild(titleAnchor);
+      container.appendChild(date);
+      eventsDiv.appendChild(container);
+      eventsDiv.appendChild(document.createElement('br'));
+    });
+  }
+</script>

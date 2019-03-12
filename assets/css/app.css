@@ -1,0 +1,17 @@
+/* This file is for your main application css. */
+
+@import "./phoenix.css";
+body{
+  background-color: #19171c;
+}
+h1,a{
+  color: white;
+}
+.event-container{
+  color: white;
+}
+.event-title{
+  padding: 10px;
+  position: absolute;
+  color: deepskyblue;
+}

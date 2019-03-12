@@ -1,0 +1,20 @@
+<div id="streamers">
+<h1>Select Your favourite streamer</h1>
+  <%= for streamer <- @conn.assigns.streamers do %>
+  <% image =
+    String.replace(streamer["thumbnail_url"], "{width}", "100")
+    |> String.replace("{height}", "50")
+  %>
+  <div style="display: flex; margin-bottom: 10px;">
+    <img src='<%=image %>' style="width:100px;height:50px;" alt="">
+    <a style="padding: 13px 10px 10px 10px;" id='<%= streamer["id"] %>'
+      href='/view-channel/<%= streamer["id"] %>/user/<%= streamer["user_id"] %>/<%= streamer["user_name"] %>'>
+      <%= streamer["user_name"] %>
+    </a>
+  </div>
+  <% end %>
+</div>
+<script type="text/javascript">
+  //populate the list of streamers on window load.
+  window.onload = getStreams
+</script>
