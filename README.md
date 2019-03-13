@@ -23,4 +23,6 @@ Additionally please answer following questions at the bottom of your README:
 1. How would you deploy the above on AWS? (ideally a rough architecture diagram will help)
 2. Where do you see bottlenecks in your proposed architecture and how would you approach scaling this app starting from 100 reqs/day to 900MM reqs/day over 6 months?
 
-*I don't have enough knowledge about AWS, so, I won't be able to answer these questions. But, using elixir and phoenix, we won't find much of a bottleneck as regards to the number of users requesting the server on a single day as elixir is built on the erlang ecosystem and the erlang vm has been built specifically to handle more the 2 million concurrent requests on a single server. So if we can provide enough memory to the EVM on AWS, we won't face server load.*
+*I don't have enough knowledge about AWS, so, I won't be able to answer these questions. But, using elixir and phoenix, we won't find much of a bottleneck as regards to the number of users requesting the server on a single day as elixir is built on the erlang ecosystem and the erlang vm has been built specifically to handle more the 2 million concurrent requests on a single server. So if we can provide enough memory to the EVM on AWS, we won't face server load.
+
+Another option would be to deploy this elixir/phoenix application using Gigalixir which provides a full distributed clustering support to run elixir applications and by this the thought of bottleneck is gone as I have already told how many concurrent requests the elixir ecosystem can handle.*
